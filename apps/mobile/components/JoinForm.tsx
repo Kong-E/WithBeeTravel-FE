@@ -49,13 +49,6 @@ export default function JoinForm() {
 
       const response = await join(validation.data!);
 
-      if ('code' in response) {
-        showToast.error({
-          message: ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        });
-        return;
-      }
-
       showToast.success({ message: '회원가입이 완료되었습니다.' });
       router.push('/login');
       setIsPinNumberModalOpen(false);

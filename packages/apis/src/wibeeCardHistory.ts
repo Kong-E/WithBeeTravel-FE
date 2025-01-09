@@ -10,16 +10,16 @@ import {
 export const getWibeeCardHistory = async (
   startDate?: string,
   endDate?: string,
-): Promise<SuccessResponse<WibeeCardHistoryListResponse> | ErrorResponse> => {
+) => {
   const params = new URLSearchParams();
   if (startDate) params.append('startDate', startDate);
   if (endDate) params.append('endDate', endDate);
 
-  const response = instance.get<WibeeCardHistoryListResponse>(
+  const response = await instance.get<WibeeCardHistoryListResponse>(
     `/api/accounts/wibeeCardHistory${params.toString() ? `?${params.toString()}` : ''}`,
   );
 
-  return response;
+  return response as SuccessResponse<WibeeCardHistoryListResponse>;
 };
 
 export const postWibeeCardToSharedPayment = async (

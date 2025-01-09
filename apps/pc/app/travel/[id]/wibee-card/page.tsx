@@ -84,15 +84,6 @@ export default function Page({ params }: WibeeCardProps) {
   ) => {
     const response = await getWibeeCardHistory(startDate, endDate);
 
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-      throw new Error(response.code);
-    }
-
     if (response.data) {
       setData(response.data);
       setPeriodStartDate(response.data.startDate);
@@ -136,15 +127,6 @@ export default function Page({ params }: WibeeCardProps) {
           id,
           selectedHistoryIds,
         );
-
-        if ('code' in response) {
-          showToast.warning({
-            message:
-              ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-              'Unknown Error',
-          });
-          throw new Error(response.code);
-        }
 
         router.push(`/travel/${id}/payments`);
       })();

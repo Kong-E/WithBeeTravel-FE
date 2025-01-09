@@ -15,10 +15,6 @@ export default async function Layout({ children, params }: LayoutProps) {
   const { id } = params;
   const travelHomeResponse = await getTravelHome(Number(id));
 
-  if ('code' in travelHomeResponse) {
-    throw ERROR_MESSAGES['FETCH-FAILED'];
-  }
-
   return (
     <main className={styles.container}>
       <Title label="공동 결제 내역" />

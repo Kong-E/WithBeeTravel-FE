@@ -116,11 +116,9 @@ export const getIsCard = async (): Promise<
   return response;
 };
 
-export const getAccountList = async (): Promise<
-  SuccessResponse<accountType> | ErrorResponse
-> => {
+export const getAccountList = async () => {
   const response = await instance.get<accountType>('/api/accounts');
-  return response;
+  return response as SuccessResponse<accountType>;
 };
 
 export const postConnectedAccount = async (

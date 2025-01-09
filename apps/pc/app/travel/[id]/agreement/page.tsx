@@ -7,10 +7,12 @@ import { Button } from '@withbee/ui/button';
 import { consentItems } from '@withbee/utils';
 import { useToast } from '@withbee/hooks/useToast';
 import { useRouter } from 'next/navigation';
-import { agreeSettlement } from '@withbee/apis';
+import { agreeSettlement, SettlementDetails } from '@withbee/apis';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
-import { ERROR_MESSAGES } from '@withbee/exception';
+import { ERROR_MESSAGES, isAPIError } from '@withbee/exception';
 import PinNumberModal from '../../../../components/PinNumberModal';
+import useSWRMutation from 'swr/mutation';
+import { SuccessResponse } from '@withbee/types';
 
 export default function ConsentPage({ params }: { params: Params }) {
   const travelId = Number(params.id);
@@ -25,33 +27,26 @@ export default function ConsentPage({ params }: { params: Params }) {
     new Array(consentItems.length).fill(false),
   );
 
-  const handelAgreeSettlement = async () => {
-    const response = await agreeSettlement(travelId);
-
-    if ('code' in response) {
-      if (
-        response.code === 'SETTLEMENT-010' ||
-        response.code === 'BANKING-001'
-      ) {
-        showToast.warning({
-          message: ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        });
-        router.push(
-          `/travel/${travelId}/settlement/pending?error=${response.code}`,
-        );
-        return;
-      } else if (response.code === 'SETTLEMENT-003') {
-        showToast.warning({
-          message: ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        });
-        return;
-      } else {
-        showToast.error({
-          message: ERROR_MESSAGES['COMMON'],
-        });
-        return;
+  const { trigger } = useSWRMutation<
+    SuccessResponse<SettlementDetails>,
+    Error,
+    string,
+    number
+  >('agreeSettlement', (key, { arg }) => agreeSettlement(arg), {
+    onError: (error) => {
+      if (isAPIError(error)) {
+        if (error.code === 'SETTLEMENT-010' || error.code === 'BANKING-001') {
+          router.push(
+            `/travel/${travelId}/settlement/pending?error=${error.code}`,
+          );
+        }
       }
-    }
+    },
+  });
+
+  const handelAgreeSettlement = async () => {
+    const response = await trigger(travelId);
+
     router.push(`/travel/${travelId}/agreement/completed`);
   };
 

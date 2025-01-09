@@ -24,11 +24,9 @@ export const createManualSharedPayment = async (
   return response;
 };
 
-export const getCurrencyUnitOptions = async (
-  travelId: string,
-): Promise<SuccessResponse<CurrencyUnitOptions> | ErrorResponse> => {
+export const getCurrencyUnitOptions = async (travelId: string) => {
   const response = await instance.get<CurrencyUnitOptions>(
     `/api/travels/${travelId}/payments/currency-unit`,
   );
-  return response;
+  return response as SuccessResponse<CurrencyUnitOptions>;
 };

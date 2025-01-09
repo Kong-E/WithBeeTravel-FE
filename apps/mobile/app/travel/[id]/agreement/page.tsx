@@ -10,7 +10,7 @@ import { useToast } from '@withbee/hooks/useToast';
 import { useRouter } from 'next/navigation';
 import { agreeSettlement } from '@withbee/apis';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
-import { ERROR_MESSAGES } from '@withbee/exception';
+import { APIError, ERROR_MESSAGES } from '@withbee/exception';
 import PinNumberModal from '../../../../components/PinNumberModal';
 
 export default function ConsentPage({ params }: { params: Params }) {
@@ -27,33 +27,32 @@ export default function ConsentPage({ params }: { params: Params }) {
   );
 
   const handelAgreeSettlement = async () => {
-    const response = await agreeSettlement(travelId);
-
-    if ('code' in response) {
-      if (
-        response.code === 'SETTLEMENT-010' ||
-        response.code === 'BANKING-001'
-      ) {
-        showToast.warning({
-          message: ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        });
-        router.push(
-          `/travel/${travelId}/settlement/pending?error=${response.code}`,
-        );
-        return;
-      } else if (response.code === 'SETTLEMENT-003') {
-        showToast.warning({
-          message: ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        });
-        return;
-      } else {
-        showToast.error({
-          message: ERROR_MESSAGES['COMMON'],
-        });
-        return;
+    try {
+      const response = await agreeSettlement(travelId);
+      router.push(`/travel/${travelId}/agreement/completed`);
+    } catch (response: unknown) {
+      if (response instanceof APIError) {
+        if (
+          response.code === 'SETTLEMENT-010' ||
+          response.code === 'BANKING-001'
+        ) {
+          showToast.warning({
+            message:
+              ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
+          });
+          router.push(
+            `/travel/${travelId}/settlement/pending?error=${response.code}`,
+          );
+          return;
+        } else if (response.code === 'SETTLEMENT-003') {
+          showToast.warning({
+            message:
+              ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
+          });
+          return;
+        }
       }
     }
-    router.push(`/travel/${travelId}/agreement/completed`);
   };
 
   // 각 약관항목에 ref를 연결해 스크롤 위치를 이동

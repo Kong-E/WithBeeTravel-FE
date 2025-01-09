@@ -44,29 +44,25 @@ export const requestSettlement = async (
 };
 
 // 세부 정산 내역 조회하기
-export const getSettlementDetails = async (
-  travelId: number,
-): Promise<SuccessResponse<SettlementDetails> | ErrorResponse> => {
+export const getSettlementDetails = async (travelId: number) => {
   const response = await instance.get<SettlementDetails>(
     `/api/travels/${travelId}/settlements`,
     {
       cache: 'no-store',
     },
   );
-  return response;
+  return response as SuccessResponse<SettlementDetails>;
 };
 
 // 정산 동의하기
-export const agreeSettlement = async (
-  travelId: number,
-): Promise<SuccessResponse<SettlementDetails> | ErrorResponse> => {
+export const agreeSettlement = async (travelId: number) => {
   const response = await instance.post<SettlementDetails>(
     `/api/travels/${travelId}/settlements/agreement`,
     {
       cache: 'no-store',
     },
   );
-  return response;
+  return response as SuccessResponse<SettlementDetails>;
 };
 
 // 정산 취소

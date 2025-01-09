@@ -1,12 +1,13 @@
 'use client';
 
-// import { useToast } from '@withbee/hooks/useToast';
-// import { useEffect } from 'react';
+import { useToast } from '@withbee/hooks/useToast';
+import { useEffect } from 'react';
 import { PaymentError } from '@withbee/ui/payment-error';
 import styles from './page.module.css';
+import { APIError, ERROR_MESSAGES } from '@withbee/exception';
 
 interface ErrorProps {
-  error: Error;
+  error: APIError;
 }
 
 export default function Error({ error }: ErrorProps) {
@@ -14,11 +15,11 @@ export default function Error({ error }: ErrorProps) {
 
   // useEffect(() => {
   //   showToast.error({
-  //     message: error.message,
+  //     message:
+  //       ERROR_MESSAGES[error.message as keyof typeof ERROR_MESSAGES] ||
+  //       '에러 발생 from app/travel/[id]/error.tsx',
   //   });
   // }, [error, showToast]);
-
-  console.error(error);
 
   return (
     <div className={styles.errorContainer}>

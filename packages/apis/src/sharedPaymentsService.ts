@@ -1,5 +1,6 @@
 'use server';
 
+import { APIError, isAPIError } from '@withbee/exception';
 import { instance } from './instance';
 import type {
   PageResponse,

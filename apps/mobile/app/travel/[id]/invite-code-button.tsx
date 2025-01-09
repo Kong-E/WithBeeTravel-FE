@@ -19,11 +19,6 @@ export function InviteCodeButton({ travelId }: { travelId: number }) {
   const handleGetInviteCode = async () => {
     const response = await getInviteCode(travelId);
 
-    if ('code' in response) {
-      alert(response.message);
-      return;
-    }
-
     if ('data' in response && response.data) {
       setModalState((prevState) => ({
         ...prevState,

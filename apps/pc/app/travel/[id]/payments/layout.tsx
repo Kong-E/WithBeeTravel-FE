@@ -2,7 +2,6 @@ import styles from './page.module.css';
 import ItemGroup from '@withbee/ui/item-group';
 import { Menu } from '@withbee/ui/menu';
 import { getTravelHome } from '@withbee/apis';
-import { ERROR_MESSAGES } from '@withbee/exception';
 
 interface LayoutProps {
   params: {
@@ -13,10 +12,6 @@ interface LayoutProps {
 export default async function Layout({ children, params }: LayoutProps) {
   const { id } = params;
   const travelHomeResponse = await getTravelHome(Number(id));
-
-  if ('code' in travelHomeResponse) {
-    throw ERROR_MESSAGES['FETCH-FAILED'];
-  }
 
   return (
     <main className={styles.container}>

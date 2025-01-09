@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FriendImage } from './friend-image';
 import styles from './payment.module.css';
 import { Item } from './item';
@@ -35,13 +35,17 @@ export const Payment = ({
   const { showToast } = useToast();
   const { travelMembers, isDomesticTravel } = travelInfo;
 
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 0,
+  );
   const [isOpen, setIsOpen] = useState(false); // 정산 인원 선택 모달 열기/닫기
   const [selectedMembers, setSelectedMembers] = useState<ParticipatingMember[]>(
     paymentInfo.participatingMembers,
   );
   const [tempSelectedMembers, setTempSelectedMembers] =
     useState<ParticipatingMember[]>(selectedMembers);
+
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState<boolean>(false);
 
   const handleSelectMember = (member: ParticipatingMember) => {
     // 선택된 멤버가 이미 선택된 경우 제거
@@ -74,25 +78,33 @@ export const Payment = ({
     });
     if (response.status == '200') {
       setSelectedMembers(tempSelectedMembers.sort((a, b) => a.id - b.id));
-      showToast.success({
-        message: '정산 인원이 변경되었습니다.',
-      });
+      // showToast.success({
+      //   message: '정산 인원이 변경되었습니다.',
+      // });
       setIsOpen(false);
     } else {
-      showToast.error({
-        message: '정산 인원 변경에 실패했습니다.',
-      });
+      // showToast.error({
+      //   message: '정산 인원 변경에 실패했습니다.',
+      // });
       throw response;
     }
   };
 
   // width > 390px일 때는 5명까지, 그 이하는 4명까지 보여줌
-  const visibleMembersLength =
-    paymentInfo.participatingMembers.length > 4 && !isPC
-      ? windowWidth > 390
-        ? 5
-        : 4
-      : selectedMembers.length;
+  const visibleMembersLength = useMemo(
+    () =>
+      paymentInfo.participatingMembers.length > 4 && !isPC
+        ? windowWidth > 390
+          ? 5
+          : 4
+        : selectedMembers.length,
+    [
+      paymentInfo.participatingMembers.length,
+      isPC,
+      windowWidth,
+      selectedMembers.length,
+    ],
+  );
 
   useEffect(() => {
     // 초기 윈도우 너비 설정
@@ -104,8 +116,6 @@ export const Payment = ({
       setTempSelectedMembers([...selectedMembers]);
     }
   }, [isOpen]);
-
-  const [isRecordModalOpen, setIsRecordModalOpen] = useState<boolean>(false);
 
   return (
     <article className={styles.payment}>

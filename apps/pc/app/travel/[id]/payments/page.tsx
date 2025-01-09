@@ -17,20 +17,6 @@ export default async function Page({ params }: TravelPageProps) {
     getSharedPayments({ travelId: Number(id) }),
   ]);
 
-  if ('code' in travelHomeResponse) {
-    throw new Error(
-      ERROR_MESSAGES[travelHomeResponse.code as keyof typeof ERROR_MESSAGES],
-    );
-  }
-
-  if ('code' in sharedPaymentsResponse) {
-    throw new Error(
-      ERROR_MESSAGES[
-        sharedPaymentsResponse.code as keyof typeof ERROR_MESSAGES
-      ],
-    );
-  }
-
   return (
     <Suspense fallback={<PaymentSkeleton />}>
       <PaymentList

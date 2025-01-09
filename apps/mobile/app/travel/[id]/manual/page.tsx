@@ -73,16 +73,6 @@ export default function Page({ params }: ManualRegisterSharedPaymentProps) {
   const handleGetCurrencyUnitOptions = async () => {
     const response = await getCurrencyUnitOptions(id);
 
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
-
     if (response.data)
       setCurrencyUnitOptions(response.data.currencyUnitOptions);
   };
@@ -154,17 +144,7 @@ export default function Page({ params }: ManualRegisterSharedPaymentProps) {
 
         // 결제 내역 저장 요청
         const response = await createManualSharedPayment(id, formDataToSend);
-
-        if ('code' in response) {
-          showToast.warning({
-            message:
-              ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-              'Unknown Error',
-          });
-
-          mutate((key: { key?: string }) => key?.key === `payments-${id}`);
-          throw new Error(response.code);
-        }
+        mutate((key: { key?: string }) => key?.key === `payments-${id}`);
       })();
     });
     router.back();

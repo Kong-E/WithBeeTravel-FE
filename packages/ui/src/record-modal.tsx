@@ -53,16 +53,6 @@ export const RecordModal: React.FC<RecordModalProps> = ({
   const handleGetSharedPaymentRecord = async () => {
     const response = await getSharedPaymentRecord(travelId, sharedPaymentId);
 
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
-
     if ('data' in response) {
       if (response.data?.paymentImage) setImageSrc(response.data.paymentImage);
       setRecord((prevRecord) => ({
@@ -94,15 +84,6 @@ export const RecordModal: React.FC<RecordModalProps> = ({
       formDataToSend,
     );
 
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
     onClose();
   };
 

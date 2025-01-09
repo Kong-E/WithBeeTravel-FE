@@ -1,9 +1,6 @@
 {
   "extends": "@withbee/typescript-config/react-library.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "target": "ESNext",
     "outDir": "dist"
   },
   "include": ["src"],

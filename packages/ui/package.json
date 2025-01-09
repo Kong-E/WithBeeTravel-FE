@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
+    "./payment-error-boundary": "./src/payment-error-boundary.tsx",
     "./wibee-card-skeletion": "./src/wibee-card-skeletion.tsx",
     "./honey-capsule-skeleton": "./src/honey-capsule-skeleton.tsx",
     "./my-page-skeleton": "./src/my-page-skeleton.tsx",
@@ -22,7 +23,6 @@
     "./time-picker-modal": "./src/time-picker-modal.tsx",
     "./record-image": "./src/record-image.tsx",
     "./manual-shared-payment-form": "./src/manual-shared-payment-form.tsx",
-    "./payment-error-boundary": "./src/payment-error-boundary.tsx",
     "./payment-skeleton": "./src/payment-skeleton.tsx",
     "./payment-list": "./src/payment-list.tsx",
     "./date-picker-modal": "./src/date-picker-modal.tsx",
@@ -69,6 +69,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.63.0",
     "chart.js": "^4.4.6",
     "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.13",
@@ -78,6 +79,7 @@
     "react-intersection-observer": "^9.13.1",
     "react-toastify": "^10.0.6",
     "swiper": "^11.1.14",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "next-auth": "5.0.0-beta.25"
   }
 }

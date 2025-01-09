@@ -38,16 +38,6 @@ export default function Page() {
   const handleGetMyPageInfo = async () => {
     const response = await getMyPageInfo();
 
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
-
     if ('data' in response) {
       setData(response.data);
       setIsLoading(false);
@@ -56,16 +46,6 @@ export default function Page() {
 
   const handleGetAccountList = async () => {
     const response = await getAccountList();
-
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
 
     if (response.data) {
       setAccounts(response.data);
@@ -87,15 +67,6 @@ export default function Page() {
         selectedAccount.accountId,
         false,
       );
-
-      if ('code' in response) {
-        showToast.error({
-          message: response.message || '알 수 없는 오류가 발생했습니다.',
-        });
-        throw new Error(
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        );
-      }
 
       if (data) {
         setData({

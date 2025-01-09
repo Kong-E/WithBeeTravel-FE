@@ -24,11 +24,6 @@ export function InviteCodeButton({ travelId, size }: InviteCodeButtonProps) {
   const handleGetInviteCode = async () => {
     const response = await getInviteCode(travelId);
 
-    if ('code' in response) {
-      alert(response.message);
-      return;
-    }
-
     if ('data' in response && response.data) {
       setModalState((prevState) => ({
         ...prevState,

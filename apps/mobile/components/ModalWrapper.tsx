@@ -14,15 +14,6 @@ export default function ModalWrapper({ travelId }: { travelId: number }) {
   const handleCancelSettlement = async () => {
     const response = await cancelSettlement(travelId);
 
-    if ('code' in response) {
-      showToast.warning({
-        message: ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-      });
-
-      showToast.error({
-        message: ERROR_MESSAGES['COMMON'],
-      });
-    }
     router.push(`/travel/${travelId}/settlement/canceled`);
   };
 

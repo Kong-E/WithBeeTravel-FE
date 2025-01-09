@@ -36,16 +36,6 @@ export default function TravelMainImage({
       travelId.toString(),
       formDataToSend,
     );
-
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
   };
 
   useEffect(() => {

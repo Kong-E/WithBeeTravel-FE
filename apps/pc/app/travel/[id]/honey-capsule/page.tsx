@@ -7,7 +7,6 @@ import { HoneyCapsule } from '@withbee/types';
 import { useEffect, useState, useRef } from 'react';
 import { getHoneyCapsule } from '@withbee/apis';
 import { useToast } from '@withbee/hooks/useToast';
-import { ERROR_MESSAGES } from '@withbee/exception';
 import { HoneyCapsuleBox } from '@withbee/ui/honey-capsule';
 import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
@@ -26,16 +25,6 @@ export default function Page({ params }: HoneyCapsuleProps) {
 
   const handleGetHoneyCapsule = async () => {
     const response = await getHoneyCapsule(id);
-
-    if ('code' in response) {
-      showToast.warning({
-        message:
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES] ||
-          'Unknown Error',
-      });
-
-      throw new Error(response.code);
-    }
 
     if (response.data) setHoneyCapsuleData(response.data);
   };

@@ -67,15 +67,6 @@ const CardIssuancePage = () => {
         isCardIssuance,
       );
 
-      if ('code' in response) {
-        showToast.error({
-          message: response.message || '알 수 없는 오류가 발생했습니다.',
-        });
-        throw new Error(
-          ERROR_MESSAGES[response.code as keyof typeof ERROR_MESSAGES],
-        );
-      }
-
       setIsAccountModalOpen(false);
 
       if (isCardIssuance) {
