@@ -21,7 +21,7 @@ export const FriendImage = ({
 
   return (
     <Image
-      src={`https://withbee-travel.s3.ap-northeast-2.amazonaws.com/profile/${safeNumber}.png`}
+      src={`/imgs/friends/${safeNumber}.png`}
       alt={`Friend ${safeNumber}`}
       width={size}
       height={size}
