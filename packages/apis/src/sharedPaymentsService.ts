@@ -50,7 +50,8 @@ export const getSharedPayments = async ({
       },
     },
   );
-  return response;
+
+  return response as SuccessResponse<PageResponse<SharedPayment>>;
 };
 
 interface chooseParticipantsParams {
