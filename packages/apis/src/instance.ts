@@ -59,7 +59,7 @@ const fetchInstance = async <T = undefined>(
       | SuccessResponse<T>
       | ErrorResponse;
 
-    if (!response.ok || isAPIError(result)) {
+    if (!response.ok) {
       const errorResult = result as ErrorResponse;
       console.error('API Error:', errorResult);
       // return errorResult;
@@ -70,7 +70,7 @@ const fetchInstance = async <T = undefined>(
     if (isAPIError(error)) {
       throw new APIError(error.code, error.message);
     }
-    throw new Error('An unknown error occurred');
+    throw new APIError('COMMON', 'Fetch failed');
   }
 };
 
