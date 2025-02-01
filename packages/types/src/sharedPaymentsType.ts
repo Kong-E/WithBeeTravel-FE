@@ -31,4 +31,4 @@ export interface SharedPaymentRecordResponse {
   mainImage: boolean;
 }
 
-export type SortBy = 'latest' | 'amount';
+export type SortBy = 'latest' | 'amount' | string;

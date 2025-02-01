@@ -2,6 +2,7 @@
 
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import type { SortBy } from '@withbee/types';
+import dayjs from 'dayjs';
 
 export type ParamKey =
   | 'sortBy'
@@ -11,7 +12,7 @@ export type ParamKey =
   | 'category';
 export type ParamValue = string | number | SortBy | undefined;
 
-export function usePaymentParams() {
+export function usePaymentParams(travelStartDate: string) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -60,8 +61,10 @@ export function usePaymentParams() {
   return {
     params: {
       sortBy: searchParams.get('sortBy') || 'latest',
-      startDate: searchParams.get('startDate'),
-      endDate: searchParams.get('endDate'),
+      startDate:
+        searchParams.get('startDate') ||
+        dayjs(travelStartDate).subtract(2, 'month').format('YYYY-MM-DD'),
+      endDate: searchParams.get('endDate') || dayjs().format('YYYY-MM-DD'),
       memberId: Number(searchParams.get('memberId')) || 0,
       category: searchParams.get('category') || '전체',
     },

@@ -1,11 +1,6 @@
 'use client';
 
-import type {
-  PageResponse,
-  SharedPayment,
-  SortBy,
-  TravelHome,
-} from '@withbee/types';
+import type { PageResponse, SharedPayment, TravelHome } from '@withbee/types';
 import styles from './payment-list.module.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
@@ -29,24 +24,22 @@ export default function PaymentList({
   travelId,
   travelInfo,
 }: PaymentListProps) {
-  const { params, updateParam } = usePaymentParams();
   const { showToast } = useToast();
-  const { sortBy, startDate, endDate, memberId, category } = params;
   const { travelStartDate, travelEndDate } = travelInfo;
+  const { params } = usePaymentParams(travelStartDate);
+  const { sortBy, startDate, endDate, memberId, category } = params;
 
   // Intersection Observer로 특정 요소가 화면에 보이는지 감지
   const { ref, inView } = useInView({
     threshold: 0.2,
   });
 
-  const getQueryParams = (pageParam: number) => ({
+  const getQueryParams = (page: number) => ({
     travelId,
-    page: pageParam,
-    sortBy: sortBy as SortBy,
-    startDate:
-      startDate ||
-      dayjs(travelStartDate).subtract(2, 'month').format('YYYY-MM-DD'),
-    endDate: endDate || travelEndDate,
+    page,
+    sortBy,
+    startDate,
+    endDate,
     ...(memberId !== 0 && { memberId }),
     ...(category !== '전체' && { category }),
   });
@@ -74,6 +67,7 @@ export default function PaymentList({
       },
       initialPageParam: 0,
       retry: false,
+      staleTime: 0,
     });
 
   // 모든 페이지의 결제내역을 하나의 배열로 합치기
@@ -138,16 +132,7 @@ export default function PaymentList({
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // travelInfo에서 받아온 startDate와 endDate를 searchParams에 반영
-  useEffect(() => {
-    if (!startDate && !endDate && travelStartDate) {
-      updateParam(
-        'startDate',
-        dayjs(travelStartDate).subtract(2, 'month').format('YYYY-MM-DD'),
-      );
-      updateParam('endDate', dayjs().format('YYYY-MM-DD'));
-    }
-  }, [startDate, endDate, travelStartDate]);
+  console.log('payments:', data);
 
   return (
     <AnimatePresence>
