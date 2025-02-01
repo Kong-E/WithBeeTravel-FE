@@ -1,31 +1,27 @@
 'use client';
 
-import type { PageResponse, SharedPayment, TravelHome } from '@withbee/types';
+import type { PageResponse, SharedPayment } from '@withbee/types';
 import styles from './payment-list.module.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Payment } from './payment';
 import { PaymentSkeleton } from './payment-skeleton';
 import { usePaymentParams } from '@withbee/hooks/usePaymentParams';
 import { APIError, ERROR_MESSAGES } from '@withbee/exception';
-import { getSharedPayments } from '@withbee/apis';
+import { getSharedPayments, useTravelHomeQuery } from '@withbee/apis';
 import { useToast } from '@withbee/hooks/useToast';
 
 interface PaymentListProps {
   travelId: number;
-  initialPayments?: PageResponse<SharedPayment> | undefined;
-  travelInfo: TravelHome;
 }
 
-export default function PaymentList({
-  travelId,
-  travelInfo,
-}: PaymentListProps) {
+export default function PaymentList({ travelId }: PaymentListProps) {
+  const { data: travelInfo } = useTravelHomeQuery(travelId);
   const { showToast } = useToast();
-  const { travelStartDate, travelEndDate } = travelInfo;
+  const { travelStartDate } = travelInfo!;
   const { params } = usePaymentParams(travelStartDate);
   const { sortBy, startDate, endDate, memberId, category } = params;
 
@@ -40,18 +36,18 @@ export default function PaymentList({
     sortBy,
     startDate,
     endDate,
-    ...(memberId !== 0 && { memberId }),
+    ...(memberId && { memberId }),
     ...(category !== '전체' && { category }),
   });
 
   const {
-    data,
+    data: paymentList,
     error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isFetching,
-  } = useInfiniteQuery<PageResponse<SharedPayment>, APIError>({
+  } = useSuspenseInfiniteQuery<PageResponse<SharedPayment>, APIError>({
     queryKey: [
       'payments',
       travelId,
@@ -77,7 +73,7 @@ export default function PaymentList({
 
   // 모든 페이지의 결제내역을 하나의 배열로 합치기
   const payments =
-    data?.pages.flatMap((page) =>
+    paymentList?.pages.flatMap((page) =>
       page && Array.isArray(page?.content) ? page.content : [],
     ) ?? [];
 
@@ -158,7 +154,7 @@ export default function PaymentList({
                       key={payment.id}
                       travelId={travelId}
                       paymentInfo={payment}
-                      travelInfo={travelInfo}
+                      travelInfo={travelInfo!}
                     />
                   ))}
                 </div>
@@ -168,7 +164,7 @@ export default function PaymentList({
                   key={payment.id}
                   travelId={travelId}
                   paymentInfo={payment}
-                  travelInfo={travelInfo}
+                  travelInfo={travelInfo!}
                 />
               ))}
           {!isFetching && <div ref={ref} />}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useToast } from './useToast';
-import { APIError, ERROR_MESSAGES, isAPIError } from '@withbee/exception';
+import { ERROR_MESSAGES, isAPIError } from '@withbee/exception';
 
 const useAPIError = () => {
   const { showToast } = useToast();

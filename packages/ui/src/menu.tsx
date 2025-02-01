@@ -9,15 +9,15 @@ import { BottomModal } from './modal';
 import selectIcon from './assets/select.png';
 import DatePickerModal from './date-picker-modal';
 import { formatDate, getDateObject } from '@withbee/utils';
-import { DateObject, TravelHome, TravelMember } from '@withbee/types';
+import { DateObject, TravelMember } from '@withbee/types';
 import { usePaymentParams } from '@withbee/hooks/usePaymentParams';
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
+import { useTravelHomeQuery } from '@withbee/apis';
 
 interface MenuProps {
-  travelInfo: TravelHome;
   className?: string;
-  travelId?: string;
+  travelId: number;
 }
 
 const AllMembers: TravelMember = {
@@ -26,8 +26,10 @@ const AllMembers: TravelMember = {
   profileImage: 0,
 };
 
-export const Menu = ({ travelInfo, className, ...props }: MenuProps) => {
-  const { params, updateParam } = usePaymentParams();
+export const Menu = ({ className, travelId, ...props }: MenuProps) => {
+  const { data: travelInfo } = useTravelHomeQuery(travelId);
+  const { travelStartDate, travelEndDate, travelMembers } = travelInfo!;
+  const { params, updateParam } = usePaymentParams(travelStartDate);
   const { startDate, endDate, memberId } = params;
   const [isOpen, setIsOpen] = useState({
     period: false,
@@ -36,12 +38,6 @@ export const Menu = ({ travelInfo, className, ...props }: MenuProps) => {
     start: false,
     end: false,
   });
-  const {
-    id: travelId,
-    travelStartDate,
-    travelEndDate,
-    travelMembers,
-  } = travelInfo;
 
   const [isFilter, setIsFilter] = useState(false); // 필터 메뉴인지 여부
 

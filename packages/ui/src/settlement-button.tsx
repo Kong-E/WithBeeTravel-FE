@@ -1,24 +1,25 @@
 'use client';
 
-import { TravelHome } from '@withbee/types';
 import { AnimatedButton } from './animated-button';
 import { useRouter } from 'next/navigation';
-import { requestSettlement } from '@withbee/apis';
+import { requestSettlement, useTravelHomeQuery } from '@withbee/apis';
 import styles from './settlement-button.module.css';
+import dayjs from 'dayjs';
 
 interface SettlementButtonProps {
-  travelInfo: TravelHome;
+  travelId: number;
   isPC?: boolean;
 }
 
 export function SettlementButton({
-  travelInfo,
+  travelId,
   isPC = false,
 }: SettlementButtonProps) {
+  const { data: travelInfo } = useTravelHomeQuery(travelId);
   const router = useRouter();
 
   const getButtonProps = () => {
-    if (travelInfo.settlementStatus === 'PENDING') {
+    if (travelInfo?.settlementStatus === 'PENDING') {
       if (travelInfo.captain) {
         return {
           label: '정산 시작하기',
@@ -34,7 +35,7 @@ export function SettlementButton({
         disabled: true,
       };
     }
-    if (travelInfo.settlementStatus === 'ONGOING') {
+    if (travelInfo?.settlementStatus === 'ONGOING') {
       return {
         label: travelInfo.isAgreed ? '정산 현황 확인' : '정산 동의하러 가기',
         onClick: () => {
@@ -45,14 +46,17 @@ export function SettlementButton({
     return {
       label: '정산 내역 확인',
       onClick: () => {
-        router.push(`/travel/${travelInfo.id}/settlement`);
+        router.push(`/travel/${travelInfo?.id}/settlement`);
       },
     };
   };
 
   return (
-    <div className={[styles.btnWrapper, isPC ? styles.pc : ''].join(' ')}>
-      <AnimatedButton {...getButtonProps()} />
-    </div>
+    travelInfo?.travelEndDate &&
+    dayjs(travelInfo.travelEndDate).isBefore(dayjs()) && (
+      <div className={[styles.btnWrapper, isPC ? styles.pc : ''].join(' ')}>
+        <AnimatedButton {...getButtonProps()} />
+      </div>
+    )
   );
 }

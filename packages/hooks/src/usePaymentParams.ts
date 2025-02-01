@@ -12,7 +12,7 @@ export type ParamKey =
   | 'category';
 export type ParamValue = string | number | SortBy | undefined;
 
-export function usePaymentParams(travelStartDate: string) {
+export function usePaymentParams(travelStartDate?: string) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -65,7 +65,7 @@ export function usePaymentParams(travelStartDate: string) {
         searchParams.get('startDate') ||
         dayjs(travelStartDate).subtract(2, 'month').format('YYYY-MM-DD'),
       endDate: searchParams.get('endDate') || dayjs().format('YYYY-MM-DD'),
-      memberId: Number(searchParams.get('memberId')) || 0,
+      memberId: Number(searchParams.get('memberId')) || null,
       category: searchParams.get('category') || '전체',
     },
     updateParam,

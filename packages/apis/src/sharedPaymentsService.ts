@@ -12,10 +12,10 @@ export interface GetSharedPaymentsParams {
   travelId: number;
   page?: number;
   sortBy?: SortBy;
-  memberId?: number;
-  startDate?: string;
-  endDate?: string;
-  category?: string;
+  memberId?: number | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  category?: string | null;
 }
 
 // 공유 결제 내역 가져오기
