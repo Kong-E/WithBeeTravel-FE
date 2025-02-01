@@ -4,6 +4,7 @@ import {
   QueryClientProvider,
   QueryClient,
   QueryCache,
+  defaultShouldDehydrateQuery,
 } from '@tanstack/react-query';
 import useAPIError from '@withbee/hooks/useAPIError';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -13,6 +14,13 @@ function makeQueryClient(handleError: (error: Error) => void) {
     defaultOptions: {
       queries: {
         throwOnError: true,
+        staleTime: 60 * 1000,
+      },
+      dehydrate: {
+        // 디하이드레이션에 보류 중인 쿼리 포함
+        shouldDehydrateQuery: (query) =>
+          defaultShouldDehydrateQuery(query) ||
+          query.state.status === 'pending',
       },
     },
     queryCache: new QueryCache({
