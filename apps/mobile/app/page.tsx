@@ -57,8 +57,6 @@ const CardIssuancePage = () => {
     }
   };
 
-  const { showToast } = useToast();
-
   const handleModalSubmit = async () => {
     if (selectedAccount) {
       isCardIssuance ? selectedAccount.accountNumber : '';

@@ -4,23 +4,20 @@ import type {
   PageResponse,
   SharedPayment,
   SortBy,
-  SuccessResponse,
   TravelHome,
 } from '@withbee/types';
 import styles from './payment-list.module.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-// import { getSharedPayments } from '@withbee/apis';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Payment } from './payment';
-import { useToast } from '@withbee/hooks/useToast';
 import { PaymentSkeleton } from './payment-skeleton';
 import { usePaymentParams } from '@withbee/hooks/usePaymentParams';
-import { APIError, ERROR_MESSAGES, isAPIError } from '@withbee/exception';
-import { GetSharedPaymentsParams } from '@withbee/apis';
-import { useSession } from 'next-auth/react';
+import { APIError, ERROR_MESSAGES } from '@withbee/exception';
+import { getSharedPayments } from '@withbee/apis';
+import { useToast } from '@withbee/hooks/useToast';
 
 interface PaymentListProps {
   travelId: number;
@@ -33,44 +30,9 @@ export default function PaymentList({
   travelInfo,
 }: PaymentListProps) {
   const { params, updateParam } = usePaymentParams();
-  const { data: session, status } = useSession();
-  const { sortBy, startDate, endDate, memberId, category } = params;
   const { showToast } = useToast();
+  const { sortBy, startDate, endDate, memberId, category } = params;
   const { travelStartDate, travelEndDate } = travelInfo;
-  const { accessToken } = session?.user ?? {};
-
-  const getSharedPayments = async ({
-    travelId,
-    page = 0,
-    sortBy = 'latest',
-    memberId,
-    startDate,
-    endDate,
-    category,
-  }: GetSharedPaymentsParams) => {
-    const searchParams = new URLSearchParams({
-      page: page.toString(),
-      sortBy,
-    });
-
-    // 선택적 파라미터는 값이 있을 때만 추가
-    if (memberId) searchParams.append('memberId', memberId.toString());
-    if (startDate) searchParams.append('startDate', startDate);
-    if (endDate) searchParams.append('endDate', endDate);
-    if (category) searchParams.append('category', category);
-
-    const response = await fetch(
-      `http://localhost:8080/api/travels/${travelId}/payments?${searchParams.toString()}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
-
-    return response;
-  };
 
   // Intersection Observer로 특정 요소가 화면에 보이는지 감지
   const { ref, inView } = useInView({
@@ -104,14 +66,7 @@ export default function PaymentList({
         const response = await getSharedPayments(
           getQueryParams(pageParam as number),
         );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new APIError(result.code, result.message);
-        }
-
-        return result.data;
+        return response.data as PageResponse<SharedPayment>;
       },
       getNextPageParam: (lastPage: PageResponse<SharedPayment>) => {
         if (lastPage?.last) return undefined;
@@ -148,8 +103,8 @@ export default function PaymentList({
     });
   };
 
-  // 에러 발생 시 토스트 메시지 출력
-  /* useEffect(() => {
+  /* // 에러 발생 시 토스트 메시지 출력
+  useEffect(() => {
     if (!error) return;
 
     // throw new Error('에러 발생 from payment-list.tsx');
@@ -172,12 +127,6 @@ export default function PaymentList({
         showToast.warning({
           message: ERROR_MESSAGES[error.code as keyof typeof ERROR_MESSAGES],
         });
-      } else {
-        showToast.error({
-          message:
-            ERROR_MESSAGES[error.code as keyof typeof ERROR_MESSAGES] ||
-            '에러 발생 from payment-list.tsx',
-        });
       }
     }
   }, [error, startDate, endDate, updateParam, showToast]); */
@@ -198,7 +147,7 @@ export default function PaymentList({
       );
       updateParam('endDate', dayjs().format('YYYY-MM-DD'));
     }
-  }, [startDate, endDate, travelStartDate, updateParam]);
+  }, [startDate, endDate, travelStartDate]);
 
   return (
     <AnimatePresence>
@@ -213,7 +162,7 @@ export default function PaymentList({
             ? groupPaymentsByDate(payments).map(([date, payments], index) => (
                 <div
                   className={styles.paymentWrapper}
-                  key={`payments-${index}`}
+                  key={`payments-${date}-${Math.random()}`}
                 >
                   <span className={styles.date}>{date}</span>
                   {payments.map((payment) => (

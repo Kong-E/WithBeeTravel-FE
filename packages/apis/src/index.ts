@@ -12,3 +12,4 @@ export * from './bankingService';
 export * from './adminService';
 export * from './realTimeMsg';
 export * from './honeyCapsuleService';
+export * from './auth/getSession';

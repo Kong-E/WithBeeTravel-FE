@@ -1,12 +1,6 @@
-'use server';
-
 import { revalidateTag } from 'next/cache';
 import { instance } from './instance';
-import {
-  SuccessResponse,
-  CurrencyUnitOptions,
-  ErrorResponse,
-} from '@withbee/types';
+import { SuccessResponse, CurrencyUnitOptions } from '@withbee/types';
 
 export const createManualSharedPayment = async (
   travelId: string,

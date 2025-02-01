@@ -1,11 +1,5 @@
-'use server';
-
 import { instance } from './instance';
-import {
-  SuccessResponse,
-  ErrorResponse,
-  WibeeCardHistoryListResponse,
-} from '@withbee/types';
+import { SuccessResponse, WibeeCardHistoryListResponse } from '@withbee/types';
 
 export const getWibeeCardHistory = async (
   startDate?: string,

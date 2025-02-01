@@ -1,6 +1,3 @@
-'use server';
-
-import { APIError, isAPIError } from '@withbee/exception';
 import { instance } from './instance';
 import type {
   PageResponse,
@@ -44,12 +41,6 @@ export const getSharedPayments = async ({
 
   const response = await instance.get<PageResponse<SharedPayment>>(
     `/api/travels/${travelId}/payments?${searchParams.toString()}`,
-    {
-      next: {
-        tags: [`sharedPayments-${travelId}`],
-        revalidate: 0,
-      },
-    },
   );
 
   return response as SuccessResponse<PageResponse<SharedPayment>>;

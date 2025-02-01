@@ -1,5 +1,3 @@
-'use server';
-
 import { instance } from './instance';
 import type { TravelMember } from '@withbee/types';
 import {

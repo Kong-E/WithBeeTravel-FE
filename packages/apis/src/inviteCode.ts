@@ -1,5 +1,3 @@
-'use server';
-
 import { instance } from './instance';
 import { ErrorResponse, SuccessResponse, InviteCode } from '@withbee/types';
 

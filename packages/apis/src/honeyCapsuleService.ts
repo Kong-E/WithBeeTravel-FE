@@ -1,6 +1,5 @@
-'use server';
 import { instance } from './instance';
-import { SuccessResponse, ErrorResponse, HoneyCapsule } from '@withbee/types';
+import { SuccessResponse, HoneyCapsule } from '@withbee/types';
 
 export const getHoneyCapsule = async (travelId: string) => {
   const response = await instance.get<HoneyCapsule[]>(

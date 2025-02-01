@@ -1,6 +1,6 @@
-import { auth } from '@withbee/auth-config';
 import { ErrorResponse, SuccessResponse } from '@withbee/types';
 import { APIError, isAPIError } from '@withbee/exception';
+import { getAccessToken } from './auth/getSession';
 
 interface RequestOptions extends RequestInit {
   isMultipart?: boolean;
@@ -20,8 +20,7 @@ const fetchInstance = async <T = undefined>(
 
     // auth 체크 및 토큰 추가
     if (options.requireAuth !== false) {
-      const session = await auth();
-      const accessToken = session?.user?.accessToken;
+      const accessToken = await getAccessToken();
 
       if (!accessToken) {
         console.error('No access token found');
