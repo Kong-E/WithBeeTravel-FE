@@ -31,7 +31,7 @@ export default function PaymentList({
 
   // Intersection Observer로 특정 요소가 화면에 보이는지 감지
   const { ref, inView } = useInView({
-    threshold: 0.2,
+    threshold: 0.5,
   });
 
   const getQueryParams = (page: number) => ({
@@ -44,31 +44,36 @@ export default function PaymentList({
     ...(category !== '전체' && { category }),
   });
 
-  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery<PageResponse<SharedPayment>, APIError>({
-      queryKey: [
-        'payments',
-        travelId,
-        sortBy,
-        startDate,
-        endDate,
-        memberId,
-        category,
-      ],
-      queryFn: async ({ pageParam = 0 }: { pageParam?: unknown }) => {
-        const response = await getSharedPayments(
-          getQueryParams(pageParam as number),
-        );
-        return response.data as PageResponse<SharedPayment>;
-      },
-      getNextPageParam: (lastPage: PageResponse<SharedPayment>) => {
-        if (lastPage?.last) return undefined;
-        return lastPage?.number + 1;
-      },
-      initialPageParam: 0,
-      retry: false,
-      staleTime: 0,
-    });
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isFetching,
+  } = useInfiniteQuery<PageResponse<SharedPayment>, APIError>({
+    queryKey: [
+      'payments',
+      travelId,
+      sortBy,
+      startDate,
+      endDate,
+      memberId,
+      category,
+    ],
+    queryFn: async ({ pageParam = 0 }: { pageParam?: unknown }) => {
+      const response = await getSharedPayments(
+        getQueryParams(pageParam as number),
+      );
+      return response.data as PageResponse<SharedPayment>;
+    },
+    getNextPageParam: (lastPage: PageResponse<SharedPayment>) => {
+      if (lastPage?.last) return undefined;
+      return lastPage?.number + 1;
+    },
+    initialPageParam: 0,
+    staleTime: 1000 * 5 * 60, // 5분
+  });
 
   // 모든 페이지의 결제내역을 하나의 배열로 합치기
   const payments =
@@ -132,8 +137,6 @@ export default function PaymentList({
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  console.log('payments:', data);
-
   return (
     <AnimatePresence>
       <section className={styles.paymentContainer}>
@@ -147,7 +150,7 @@ export default function PaymentList({
             ? groupPaymentsByDate(payments).map(([date, payments], index) => (
                 <div
                   className={styles.paymentWrapper}
-                  key={`payments-${date}-${Math.random()}`}
+                  key={`payments-${date}-${index}`}
                 >
                   <span className={styles.date}>{date}</span>
                   {payments.map((payment) => (
@@ -168,7 +171,7 @@ export default function PaymentList({
                   travelInfo={travelInfo}
                 />
               ))}
-          <div ref={ref} />
+          {!isFetching && <div ref={ref} />}
         </motion.div>
       </section>
 
