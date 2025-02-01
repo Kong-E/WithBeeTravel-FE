@@ -6,7 +6,7 @@ import MobileFooter from '../components/MobileFooter';
 import { CustomToastContainer } from '@withbee/ui/toast-container';
 import RealtIimeMsg from '../components/RealTimeMsg';
 import { SessionProvider } from 'next-auth/react';
-import { QueryClientComponentProvider } from '../lib/QueryClientProvider';
+import ReactQueryProvider from '../lib/QueryClientProvider';
 
 const pretendard = localFont({
   src: 'fonts/PretendardVariable.woff2',
@@ -48,12 +48,12 @@ export default function RootLayout({
         <div className="mobile">
           {/* <SWRProvider> */}
           <SessionProvider>
-            <QueryClientComponentProvider>
+            <ReactQueryProvider>
               <RealtIimeMsg />
               <CustomToastContainer />
               {children}
               <MobileFooter />
-            </QueryClientComponentProvider>
+            </ReactQueryProvider>
           </SessionProvider>
           {/* </SWRProvider> */}
         </div>
