@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  logging: {
+    fetches: {
+      fullUrl: true, // 전체 URL 표시
+    },
+  },
   images: {
     remotePatterns: [
       {
