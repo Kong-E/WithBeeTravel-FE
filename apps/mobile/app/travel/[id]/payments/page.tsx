@@ -23,7 +23,7 @@ export default async function Page({ params }: TravelPageProps) {
   ]);
 
   return (
-    <Suspense fallback={<PaymentSkeleton />}>
+    <>
       <PaymentList
         travelId={Number(id)}
         initialPayments={sharedPaymentsResponse.data}
@@ -33,6 +33,6 @@ export default async function Page({ params }: TravelPageProps) {
         dayjs(travelHomeResponse.data.travelEndDate).isBefore(dayjs()) && (
           <SettlementButton travelInfo={travelHomeResponse.data} />
         )}
-    </Suspense>
+    </>
   );
 }

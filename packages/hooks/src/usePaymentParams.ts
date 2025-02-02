@@ -12,7 +12,7 @@ export type ParamKey =
   | 'category';
 export type ParamValue = string | number | SortBy | undefined;
 
-export function usePaymentParams(travelStartDate: string) {
+export function usePaymentParams(travelStartDate?: string) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
