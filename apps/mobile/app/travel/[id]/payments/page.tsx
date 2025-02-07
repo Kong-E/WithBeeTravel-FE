@@ -17,16 +17,17 @@ interface TravelPageProps {
 
 export default async function Page({ params }: TravelPageProps) {
   const { id } = params;
-  const [travelHomeResponse, sharedPaymentsResponse] = await Promise.all([
+  const [travelHomeResponse] = await Promise.all([
     getTravelHome(Number(id)),
-    getSharedPayments({ travelId: Number(id) }),
+    // getSharedPayments({ travelId: Number(id) }),
   ]);
 
   return (
     <>
       <PaymentList
         travelId={Number(id)}
-        initialPayments={sharedPaymentsResponse.data}
+        // initialPayments={sharedPaymentsResponse.data}
+        initialPayments={undefined}
         travelInfo={travelHomeResponse.data!}
       />
       {travelHomeResponse.data?.travelEndDate &&

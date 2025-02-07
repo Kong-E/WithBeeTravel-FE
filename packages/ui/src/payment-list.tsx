@@ -74,10 +74,6 @@ export default function PaymentList({
     },
     initialPageParam: 0,
     staleTime: 1000 * 5 * 60, // 5분
-    initialData: {
-      pages: [initialPayments!],
-      pageParams: [0],
-    },
   });
 
   // 모든 페이지의 결제내역을 하나의 배열로 합치기
