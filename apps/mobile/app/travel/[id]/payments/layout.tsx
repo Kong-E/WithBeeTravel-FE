@@ -21,28 +21,31 @@ export default async function Layout({ children, params }: LayoutProps) {
 
   const queryClient = new QueryClient();
 
-  const { data: travelInfo } = await queryClient.fetchQuery({
+  const travelInfo = await queryClient.fetchQuery({
     queryKey: ['travelHome', Number(id)],
-    queryFn: () => getTravelHome(Number(id)),
+    queryFn: async () => {
+      const response = await getTravelHome(Number(id));
+      return response.data!;
+    },
     staleTime: 1000 * 60 * 5,
   });
 
-  console.log('prefdtche', travelInfo);
+  console.log('prefetch', travelInfo);
 
   queryClient.prefetchInfiniteQuery({
     queryKey: [
       'payments',
       Number(id),
-      'latest',
-      dayjs(travelInfo?.travelStartDate)
-        .subtract(2, 'month')
-        .format('YYYY-MM-DD'),
-      dayjs().format('YYYY-MM-DD'),
-      null,
-      '전체',
+      // 'latest',
+      // dayjs(travelInfo?.travelStartDate)
+      //   .subtract(2, 'month')
+      //   .format('YYYY-MM-DD'),
+      // dayjs().format('YYYY-MM-DD'),
+      // null,
+      // '전체',
     ],
     queryFn: ({ pageParam = 0 }) =>
-      getSharedPayments({ travelId: Number(id), page: pageParam }),
+      getSharedPayments({ travelId: Number(id), page: 0 }),
     initialPageParam: 0,
     staleTime: 1000 * 60 * 1,
   });

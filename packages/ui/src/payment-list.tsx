@@ -22,7 +22,7 @@ export default function PaymentList({ travelId }: PaymentListProps) {
   const { data: travelInfo } = useTravelHomeQuery(travelId);
   const { showToast } = useToast();
   const { travelStartDate } = travelInfo!;
-  const { params } = usePaymentParams(travelStartDate);
+  const { params, updateParam } = usePaymentParams(travelStartDate);
   const { sortBy, startDate, endDate, memberId, category } = params;
 
   // Intersection Observer로 특정 요소가 화면에 보이는지 감지
@@ -51,13 +51,13 @@ export default function PaymentList({ travelId }: PaymentListProps) {
     queryKey: [
       'payments',
       travelId,
-      sortBy,
-      startDate,
-      endDate,
-      memberId,
-      category,
+      // sortBy,
+      // startDate,
+      // endDate,
+      // memberId,
+      // category,
     ],
-    queryFn: async ({ pageParam = 0 }: { pageParam?: unknown }) => {
+    queryFn: async ({ pageParam }) => {
       const response = await getSharedPayments(
         getQueryParams(pageParam as number),
       );
