@@ -83,7 +83,7 @@ export const getTravelHome = async (travelId: number) => {
     // },
   });
 
-  return response as SuccessResponse<TravelHome>;
+  return (response as SuccessResponse<TravelHome>).data!;
 };
 
 export const changeTravelMainImage = async (

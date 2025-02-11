@@ -27,18 +27,8 @@ export default async function TravelDetailPage({ params }: TravelHomeProps) {
   const travelId = Number(params.id);
   const response = await getTravelHome(travelId);
 
-  if (!('data' in response)) {
-    throw new Error(ERROR_MESSAGES['FETCH-FAILED']);
-  }
-
-  const { data } = response;
-
-  if (!data) {
-    throw new Error('Travel data not found');
-  }
-
-  const statistics = Object.entries(data.statistics);
-  const travelCountriesCount = data.countries?.length;
+  const statistics = Object.entries(response.statistics);
+  const travelCountriesCount = response.countries?.length;
 
   return (
     <Suspense fallback={<div></div>}>
@@ -47,11 +37,11 @@ export default async function TravelDetailPage({ params }: TravelHomeProps) {
         <div className={styles.subContainer}>
           <div className={styles.subtitleContainer}>
             <p className={styles.date}>
-              {formatDateWithSlash(data.travelStartDate)} ~{' '}
-              {formatDateWithSlash(data.travelEndDate)}
+              {formatDateWithSlash(response.travelStartDate)} ~{' '}
+              {formatDateWithSlash(response.travelEndDate)}
             </p>
             <div className={styles.subtitleWrapper}>
-              <h2 className={styles.subtitle}>{data.travelName}</h2>
+              <h2 className={styles.subtitle}>{response.travelName}</h2>
               <Link
                 href={`/travel/${travelId}/form?mode=edit`}
                 className={styles.button}
@@ -60,13 +50,13 @@ export default async function TravelDetailPage({ params }: TravelHomeProps) {
               </Link>
             </div>
           </div>
-          <TravelMainImage travelId={travelId} image={data.mainImage} />
+          <TravelMainImage travelId={travelId} image={response.mainImage} />
 
-          {data.isDomesticTravel ? (
+          {response.isDomesticTravel ? (
             <Item label="국내여행" />
           ) : (
             <div className={styles.tagWrapper}>
-              {data.countries.map((country) => (
+              {response.countries.map((country) => (
                 <Item
                   key={country}
                   label={travelCountriesCount < 2 ? `${country} 여행` : country}
@@ -75,12 +65,12 @@ export default async function TravelDetailPage({ params }: TravelHomeProps) {
             </div>
           )}
           <div className={styles.friendsWrapper}>
-            {data.travelMembers &&
-              data.travelMembers.map((member) => (
+            {response.travelMembers &&
+              response.travelMembers.map((member) => (
                 <FriendImage
                   key={member.id}
                   src={member.profileImage}
-                  isGroup={data.travelMembers.length > 1}
+                  isGroup={response.travelMembers.length > 1}
                 />
               ))}
           </div>
@@ -91,7 +81,7 @@ export default async function TravelDetailPage({ params }: TravelHomeProps) {
             <Button label="그룹 결제 내역" />
           </Link>
 
-          {data.settlementStatus !== 'DONE' ? (
+          {response.settlementStatus !== 'DONE' ? (
             <InviteCodeButton travelId={travelId} />
           ) : (
             <Link href={`/travel/${travelId}/honey-capsule`}>

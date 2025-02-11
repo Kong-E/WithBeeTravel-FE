@@ -57,12 +57,8 @@ export default function PaymentList({ travelId }: PaymentListProps) {
       // memberId,
       // category,
     ],
-    queryFn: async ({ pageParam }) => {
-      const response = await getSharedPayments(
-        getQueryParams(pageParam as number),
-      );
-      return response.data as PageResponse<SharedPayment>;
-    },
+    queryFn: ({ pageParam }) =>
+      getSharedPayments(getQueryParams(pageParam as number)),
     getNextPageParam: (lastPage: PageResponse<SharedPayment>) => {
       if (lastPage?.last) return undefined;
       return lastPage?.number + 1;

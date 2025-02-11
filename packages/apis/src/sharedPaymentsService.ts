@@ -43,7 +43,7 @@ export const getSharedPayments = async ({
     `/api/travels/${travelId}/payments?${searchParams.toString()}`,
   );
 
-  return response as SuccessResponse<PageResponse<SharedPayment>>;
+  return (response as SuccessResponse<PageResponse<SharedPayment>>).data!;
 };
 
 interface chooseParticipantsParams {

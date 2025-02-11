@@ -81,12 +81,12 @@ function TravelFormContent() {
   const formattedTravelData =
     travelData && 'data' in travelData && travelData.data
       ? {
-          travelId: travelData.data.travelId,
-          travelName: travelData.data.travelName,
-          isDomesticTravel: travelData.data.isDomesticTravel,
-          travelCountries: travelData.data.countries || [],
-          travelStartDate: travelData.data.travelStartDate,
-          travelEndDate: travelData.data.travelEndDate,
+          travelId: travelData.travelId,
+          travelName: travelData.travelName,
+          isDomesticTravel: travelData.isDomesticTravel,
+          travelCountries: travelData.countries || [],
+          travelStartDate: travelData.travelStartDate,
+          travelEndDate: travelData.travelEndDate,
         }
       : undefined;
 
