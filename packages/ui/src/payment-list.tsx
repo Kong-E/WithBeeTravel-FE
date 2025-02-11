@@ -3,8 +3,7 @@
 import type { PageResponse, SharedPayment } from '@withbee/types';
 import styles from './payment-list.module.css';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { useInfiniteScroll } from '@withbee/hooks/useInfiniteScroll';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Payment } from './payment';
@@ -24,11 +23,6 @@ export default function PaymentList({ travelId }: PaymentListProps) {
   const { travelStartDate } = travelInfo!;
   const { params, updateParam } = usePaymentParams(travelStartDate);
   const { sortBy, startDate, endDate, memberId, category } = params;
-
-  // Intersection Observer로 특정 요소가 화면에 보이는지 감지
-  const { ref, inView } = useInView({
-    threshold: 0.5,
-  });
 
   const getQueryParams = (page: number) => ({
     travelId,
@@ -66,6 +60,14 @@ export default function PaymentList({ travelId }: PaymentListProps) {
     initialPageParam: 0,
     staleTime: 1000 * 5 * 60, // 5분
   });
+
+  // Intersection Observer로 특정 요소가 화면에 보이는지 감지
+  const { ref } = useInfiniteScroll(
+    0.5,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  );
 
   // 모든 페이지의 결제내역을 하나의 배열로 합치기
   const payments =
@@ -121,13 +123,6 @@ export default function PaymentList({ travelId }: PaymentListProps) {
       }
     }
   }, [error, startDate, endDate, updateParam, showToast]); */
-
-  // 무한 스크롤 처리
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <AnimatePresence>
